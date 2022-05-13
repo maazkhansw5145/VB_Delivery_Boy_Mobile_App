@@ -1,0 +1,29 @@
+.title {
+  background-color: black;
+  color: white;
+  border-radius: 10px;
+  text-align: center;
+  margin: 10px auto;
+}
+
+.responsive-input-loginID {
+  width: 279px;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 412px) {
+  .responsive-input-loginID {
+    width: 100%;
+  }
+}
+
+.responsive-alert {
+  width: 360px;
+  margin: 0 auto 18px auto;
+}
+
+@media only screen and (max-width: 420px) {
+  .responsive-alert {
+    width: 100%;
+  }
+}
