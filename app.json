@@ -23,7 +23,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "config": {
@@ -40,7 +42,8 @@
         "googleMaps": {
           "apiKey": "AIzaSyBbzt5t9rg2kCEIBPn8_OGW1Y50tHGJ6sk"
         }
-      }
+      },
+      "package": "com.maazkhansw.deliveryboy"
     },
     "web": {
       "favicon": "./assets/favicon.png"
