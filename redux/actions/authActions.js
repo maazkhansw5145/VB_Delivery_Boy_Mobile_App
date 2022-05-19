@@ -14,9 +14,12 @@ import registerForPushNotifications from "../../constants/registerForPushNotific
 import { returnErrors } from "./errorActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import url from "../../constants/url";
+import firebase from "firebase/app";
+import "firebase/storage";
 
 // Login User
 export const login = (data) => (dispatch) => {
+  console.log(data);
   fetch(`${url}/login`, {
     method: "POST",
     headers: {
@@ -51,6 +54,7 @@ export const logout = () => {
 
 export const changeAvailability =
   (deliveryboyID, availability) => async (dispatch) => {
+    console.log(availability)
     let user = await AsyncStorage.getItem("persist:auth");
     let token = JSON.parse(user).token;
     fetch(`${url}/change/availability/${deliveryboyID}`, {
@@ -64,6 +68,7 @@ export const changeAvailability =
     })
       .then((res) => res.json())
       .then((res) => {
+        console.log(res)
         dispatch({
           type: CHANGE_AVAILABILITY,
           payload: res.availability,
@@ -71,23 +76,35 @@ export const changeAvailability =
       });
   };
 
-export const updateProfileImage = (deliveryboyID, image) => (dispatch) => {
-  fetch(`${url}/${deliveryboyID}/image/upload`, {
-    headers: {
-      Accept: "application/json",
-    },
-    method: "POST",
-    body: image,
-  })
-    .then((resp) => resp.json())
-    .then((response) => {
-      if (response.msg === "saved") {
-        dispatch({
-          type: UPDATE_PROFILE_IMAGE,
-          payload: response.imageURL,
+export const updateProfileImage = (deliveryboyID, image) => async (dispatch) => {
+  let user = await AsyncStorage.getItem("persist:auth");
+  let token = JSON.parse(user).token;
+  const task = firebase.storage().ref().child(`deliveryboys/${deliveryboyID}`).put(image);
+  task.on(firebase.storage.TaskEvent.STATE_CHANGED, () => {
+    task.snapshot.ref.getDownloadURL().then((imageURL) => {
+      fetch(`${url}/${deliveryboyID}/image/upload`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ imageURL }),
+      })
+        .then((res) => res.json())
+        .then((response) => {
+          if (response.msg === "Image Uploaded Successfully") {
+            dispatch({
+              type: UPDATE_PROFILE_IMAGE,
+              payload: imageURL,
+            });
+          }
+        })
+        .catch((e) => {
+          dispatch(returnErrors({ error: { error: "Network Error" } }));
         });
-      }
     });
+  });
 };
 
 export const getNotifications = (userId, skip) => async (dispatch) => {
@@ -134,8 +151,8 @@ export const getNotifications = (userId, skip) => async (dispatch) => {
 };
 
 // Update Profile Name
-export const updateProfileName = (buyerID, name) => (dispatch) => {
-  fetch(`${url}/${buyerID}/profile/update/name`, {
+export const updateProfileName = (dbID, name) => (dispatch) => {
+  fetch(`${url}/${dbID}/profile/update/name`, {
     method: "PUT",
     headers: {
       Accept: "application/json",

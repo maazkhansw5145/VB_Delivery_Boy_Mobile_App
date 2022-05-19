@@ -84,7 +84,7 @@ export function HistoryScreen(props) {
               You Have Not Completed Any Order Yet
             </Text>
             <Text style={styles.noHistoryText}>
-              Order Now And Create History
+              Wait for your seller to assign you an order 
             </Text>
           </>
         </TouchableOpacity>

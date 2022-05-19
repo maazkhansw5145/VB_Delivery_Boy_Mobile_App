@@ -15,7 +15,8 @@ function Receipt(props) {
   if (loading) {
     return <Loading />;
   }
-  const { sendAt, order, seller } = receipt;
+  const { sendAt, order, seller,buyer } = receipt;
+  console.log(receipt)
   let date = new Date(sendAt).toLocaleDateString();
   let time = new Date(sendAt).toLocaleTimeString();
   var totalQuantity = 0;
@@ -32,20 +33,26 @@ function Receipt(props) {
         <View>
           <View>
             <View style={styles.row}>
-              <Text style={[styles.cell, styles.bold]}>Order From</Text>
-              <Text style={[styles.cell, styles.italic]}>{seller.name}</Text>
+              <Text style={[styles.cell, styles.bold]}>Ordered By</Text>
+              <Text style={[styles.cell, styles.italic]}>{buyer.name}</Text>
               <View style={styles.cell}></View>
             </View>
           </View>
+          <View>
+          <View style={{flexDirection:'row',marginBottom:15}}>
+              <Text style={[styles.cell, styles.bold]}>Contact Number</Text>
+              <Text style={[styles.italic,{alignSelf:'center'}]}>{buyer.contact}</Text>
+            </View>
+          </View>
 
-          <View style={styles.row}>
+          <View style={{flexDirection:'row',marginBottom:15}}>
             <Text style={[styles.cell, styles.bold, { alignSelf: "center" }]}>
-              Ordered At
+              Time
             </Text>
             <Text
-              style={[styles.cell, styles.italic, { color: "cornflowerblue" }]}
+              style={[styles.italic, { color: "cornflowerblue" }]}
             >
-              {date} {time}
+              {date} --- {time}
             </Text>
             <Text style={styles.cell}></Text>
           </View>

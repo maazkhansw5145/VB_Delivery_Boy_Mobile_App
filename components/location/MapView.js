@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import MapView from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,7 @@ import {
   Dimensions,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 import currentLocation from "./currentLocation";
 import Loading from "../Loading";
@@ -14,6 +15,7 @@ import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import { orderCompleted } from "../../redux/actions/deliveryboyActions";
 import MapViewDirections from "react-native-maps-directions";
+import * as Location from "expo-location";
 
 function MapViewComponent(props) {
   const [coordinates, setCoordinates] = useState(null);
@@ -30,7 +32,7 @@ function MapViewComponent(props) {
 
   useEffect(() => {
     let loc = currentLocation();
-    loc.then((l) => {
+    loc.then(async (l) => {
       if (l === "Permission denied") {
         showAlert();
       } else {
@@ -39,6 +41,19 @@ function MapViewComponent(props) {
           longitude: l.coords.longitude,
         });
         setLoading(false);
+        await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 10000,
+            distanceInterval: 1,
+          },
+          (newLocation) => {
+            setCoordinates({
+              latitude: newLocation.coords.latitude,
+              longitude: newLocation.coords.longitude,
+            });
+          }
+        );
       }
     });
   }, []);
@@ -79,6 +94,12 @@ function MapViewComponent(props) {
     });
   }
 
+  console.log("LOCATION 1", coordinates.latitude, coordinates.longitude);
+  console.log(
+    "LOCATION 2",
+    order.location.coordinates[0],
+    order.location.coordinates[1]
+  );
   return (
     <View style={styles.container}>
       <MapView
@@ -86,11 +107,28 @@ function MapViewComponent(props) {
         region={{
           latitude: coordinates.latitude,
           longitude: coordinates.longitude,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
+          latitudeDelta: 0.002,
+          longitudeDelta: 0.002,
         }}
         mapType="hybrid"
       >
+        <Marker
+          coordinate={{
+            latitude: coordinates.latitude,
+            longitude: coordinates.longitude,
+          }}
+        >
+          <Image
+            source={require("../../assets/rider.png")}
+            style={{ height: 35, width: 35 }}
+          />
+        </Marker>
+        <Marker
+          coordinate={{
+            latitude: order.location.coordinates[0],
+            longitude: order.location.coordinates[1],
+          }}
+        />
         <MapViewDirections
           origin={{
             latitude: coordinates.latitude,
@@ -101,9 +139,10 @@ function MapViewComponent(props) {
             longitude: order.location.coordinates[1],
           }}
           apikey={"AIzaSyBbzt5t9rg2kCEIBPn8_OGW1Y50tHGJ6sk"}
-          strokeWidth={3}
-          strokeColor="hotpink"
-          optimizeWaypoints={true}
+          precision="high"
+          strokeWidth={5}
+          strokeColor="cornflowerblue"
+          // optimizeWaypoints={true}
           // onStart={(params) => {
           //   console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
           // }}
@@ -111,7 +150,7 @@ function MapViewComponent(props) {
           //   console.log(`Distance: ${result.distance} km`)
           //   console.log(`Duration: ${result.duration} min.`)
 
-          //   this.mapView.fitToCoordinates(result.coordinates, {
+          //   mapView.fitToCoordinates(result.coordinates, {
           //     edgePadding: {
           //       right: (width / 20),
           //       bottom: (height / 20),
@@ -120,9 +159,9 @@ function MapViewComponent(props) {
           //     }
           //   });
           // }}
-          onError={(errorMessage) => {
-            // console.log('GOT AN ERROR');
-          }}
+          // onError={(errorMessage) => {
+          //   // console.log('GOT AN ERROR');
+          // }}
         />
       </MapView>
       <TouchableOpacity
@@ -154,10 +193,7 @@ function MapViewComponent(props) {
         disabled={loading}
         onPress={() => {
           setLoading(true);
-          props.orderCompleted(
-            order._id,
-            props.route.params.deliveryboyId
-          );
+          props.orderCompleted(order._id, props.route.params.deliveryboyId);
         }}
       >
         {!loading ? (

@@ -25,7 +25,7 @@ function Header(props) {
               dark={true}
             >
               <Appbar.Action
-                icon="hamburger"
+                icon="reorder-horizontal"
                 onPress={() => props.navigation.openDrawer()}
               />
               <Appbar.Content title="Virtual Bazaar" />

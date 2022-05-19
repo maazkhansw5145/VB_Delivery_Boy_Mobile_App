@@ -1,19 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { View, Image, Text, FlatList } from "react-native";
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Image, Text, ScrollView, RefreshControl } from "react-native";
 import Loading from "./Loading";
 import { connect } from "react-redux";
 import { getOrder } from "../redux/actions/deliveryboyActions";
-import screenWidth from "../constants/screenWidth";
 import List from "./List";
 import { Ionicons } from "@expo/vector-icons";
 import RNEventSource from "react-native-event-source";
+
 function OrderList(props) {
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState(null);
   const [listening, setListening] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    props.getOrder(props.auth.deliveryboy.id);
+    setRefreshing(false);
+  }, []);
+
   useEffect(() => {
     var source;
-    source = new RNEventSource("http://192.168.43.15:6060/stream");
+    source = new RNEventSource("https://vb-seller-server.herokuapp.com/stream");
     if (!listening) {
       source.addEventListener(
         "open",
@@ -28,7 +36,7 @@ function OrderList(props) {
     source.addEventListener(
       `order-assignment-${props.auth.deliveryboy.id}`,
       function (e) {
-        console.log("get order")
+        console.log("get order");
         props.getOrder(props.auth.deliveryboy.id);
       },
       false
@@ -81,7 +89,7 @@ function OrderList(props) {
               color: "cornflowerblue",
             }}
           >
-            You are not availible for receieving orders.
+            You are not available for receiving orders.
           </Text>
           <Text
             style={{
@@ -127,32 +135,29 @@ function OrderList(props) {
         </Text>
       </View>
       {order === null ? (
-        <View>
-          <View
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          contentContainerStyle={{
+            height: "100%",
+            alignItems: "center",
+            marginTop: 160,
+          }}
+        >
+          <Ionicons name="hourglass-outline" size={60} color="cornflowerblue" />
+          <Text
             style={{
-              height: "100%",
-              alignItems: "center",
-              marginTop: 160,
+              fontSize: 18,
+              color: "cornflowerblue",
+              textAlign: "center",
+              fontWeight: "bold",
+              marginTop: 30,
             }}
           >
-            <Ionicons
-              name="hourglass-outline"
-              size={60}
-              color="cornflowerblue"
-            />
-            <Text
-              style={{
-                fontSize: 18,
-                color: "cornflowerblue",
-                textAlign: "center",
-                fontWeight: "bold",
-                marginTop: 30,
-              }}
-            >
-              No Order Yet. Chill out!
-            </Text>
-          </View>
-        </View>
+            No Order Yet. Chill out!
+          </Text>
+        </ScrollView>
       ) : (
         // <FlatList
         //   data={order.order}

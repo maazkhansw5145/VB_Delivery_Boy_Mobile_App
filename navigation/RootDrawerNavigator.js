@@ -81,7 +81,7 @@ const DrawerContent = (props) => {
       />
       <Drawer.Item
         label="Profile"
-        icon="face-profile"
+        icon="face-man-profile"
         onPress={() => {
           props.navigation.navigate("Profile");
         }}

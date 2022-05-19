@@ -10,7 +10,7 @@ const StackNavigator = createStackNavigator();
 const LoginStackNavigator = () => {
   return (
     <StackNavigator.Navigator>
-      <StackNavigator.Screen name="Virtual Bazaar" component={LoginForm} />
+      <StackNavigator.Screen name="Virtual Bazaar - Delivery Boy" component={LoginForm} />
       <StackNavigator.Screen
         name="PhoneAuthentication"
         component={PhoneAuthentication}
