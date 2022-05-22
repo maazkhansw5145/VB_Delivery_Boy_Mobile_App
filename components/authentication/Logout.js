@@ -10,7 +10,7 @@ function LogOutScreen(props) {
   };
   return (
     <ConfirmationScreen
-      title="Are You Sure To Logout ?"
+      title="Are you sure to logout?"
       onYes={onYes}
     />
   );

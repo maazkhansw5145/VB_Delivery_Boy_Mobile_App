@@ -30,6 +30,7 @@ export const login = (data) => (dispatch) => {
   })
     .then((res) => res.json())
     .then((data) => {
+      console.log("resp",data)
       if (data.msg === "Login Successfully") {
         registerForPushNotifications(data.data)
         dispatch({
@@ -152,16 +153,18 @@ export const getNotifications = (userId, skip) => async (dispatch) => {
 
 // Update Profile Name
 export const updateProfileName = (dbID, name) => (dispatch) => {
-  fetch(`${url}/${dbID}/profile/update/name`, {
+  console.log(dbID, name)
+  fetch(`${url}/${dbID}/update/name`, {
     method: "PUT",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(name),
+    body: JSON.stringify({name}),
   })
     .then((res) => res.json())
     .then((data) => {
+      console.log(data)
       if (data.msg === "Update Successfully") {
         dispatch({
           type: UPDATE_PROFILE_NAME,
@@ -170,6 +173,7 @@ export const updateProfileName = (dbID, name) => (dispatch) => {
       }
     })
     .catch((err) => {
+      console.log(err)
       dispatch(
         returnErrors({
           error: err

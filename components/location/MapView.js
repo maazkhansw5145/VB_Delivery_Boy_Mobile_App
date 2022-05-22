@@ -120,7 +120,8 @@ function MapViewComponent(props) {
         >
           <Image
             source={require("../../assets/rider.png")}
-            style={{ height: 35, width: 35 }}
+            style={{ height: 40, width: 40 }}
+            resizeMode="stretch"
           />
         </Marker>
         <Marker

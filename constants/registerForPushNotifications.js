@@ -1,6 +1,7 @@
 import * as Notifications from "expo-notifications";
 import { savingToken } from "./API";
 import { Alert } from "react-native";
+
 function showAlert() {
   Alert.alert(
     "Notification Permission Denied",
@@ -32,5 +33,7 @@ export default registerForPushNotifications = async (data) => {
     if (!alreadySaved) {
       savingToken(data.id, token);
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error)
+  }
 };

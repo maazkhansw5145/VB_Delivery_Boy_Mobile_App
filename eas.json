@@ -14,9 +14,5 @@
       "developmentClient": true
     },
     "production": {}
-  },
-  "cli": {
-    "version": ">= 0.52.0",
-    "requireCommit": true
   }
 }

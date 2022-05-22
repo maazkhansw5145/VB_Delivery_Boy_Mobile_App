@@ -87,13 +87,6 @@ const DrawerContent = (props) => {
         }}
       />
       <Drawer.Item
-        label="History"
-        icon="history"
-        onPress={() => {
-          props.navigation.navigate("History");
-        }}
-      />
-      <Drawer.Item
         label="Logout"
         icon="logout"
         onPress={() => {

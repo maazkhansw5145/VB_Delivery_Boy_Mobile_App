@@ -10,7 +10,7 @@ import {
   GET_NOTIFICATIONS,
   ADD_NOTIFICATIONS,
   NO_MORE_NOTIFICATIONS,
-  ADD_PHONE_NUMBER
+  ADD_PHONE_NUMBER,
 } from "../actions/Types";
 
 const initialState = {
@@ -46,12 +46,12 @@ export default function (state = initialState, action) {
         ...state,
         msg: null,
       };
-      case ADD_PHONE_NUMBER:
-        return {
-          ...state,
-          deliveryboy: { ...state.deliveryboy, phoneNumber: action.payload },
-          msg: "Phone Number Added Sucessfully",
-        };
+    case ADD_PHONE_NUMBER:
+      return {
+        ...state,
+        deliveryboy: { ...state.deliveryboy, phoneNumber: action.payload },
+        msg: "Phone Number Added Sucessfully",
+      };
     case CHANGE_AVAILABILITY:
       return {
         ...state,
@@ -84,8 +84,7 @@ export default function (state = initialState, action) {
     case UPDATE_PROFILE_NAME:
       return {
         ...state,
-        user: { ...state.deliveryboy, name: action.payload },
-        msg: "Updated Successfully",
+        deliveryboy: { ...state.deliveryboy, name: action.payload },
       };
     default:
       return state;
